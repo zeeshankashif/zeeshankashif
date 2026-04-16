@@ -97,7 +97,7 @@ function ExperienceSection() {
         <p className="eyebrow">Experience</p>
         <h2 className="section-title">Skills in Motion</h2>
         <p className="section-lead">
-         Here I've shown my experience in the form of Graphics , because brainless people doesn't understand simple numerics ( like you and me )
+         Here I've shown my experience in the form of Graphics , because brainless people doesn't visualize simple numerics ( like you and me )
         </p>
 
         <div className="chart-card glass-panel">
@@ -216,7 +216,7 @@ function AboutSection() {
         </div>
       </div>
       <footer className="site-footer">
-        <span>© {new Date().getFullYear()} Verified : Zeeshan Kashif</span>
+        <span>© {new Date().getFullYear()} Verified : Zeeshan Kashif ✔</span>
       </footer>
     </section>
   );

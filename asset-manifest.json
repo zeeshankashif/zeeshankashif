@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/zeeshankashif.github.io/zeeshankashif/static/css/main.81daaba0.css",
-    "main.js": "/zeeshankashif.github.io/zeeshankashif/static/js/main.909fed1f.js",
-    "static/js/453.635f5f07.chunk.js": "/zeeshankashif.github.io/zeeshankashif/static/js/453.635f5f07.chunk.js",
-    "index.html": "/zeeshankashif.github.io/zeeshankashif/index.html",
-    "main.81daaba0.css.map": "/zeeshankashif.github.io/zeeshankashif/static/css/main.81daaba0.css.map",
-    "main.909fed1f.js.map": "/zeeshankashif.github.io/zeeshankashif/static/js/main.909fed1f.js.map",
-    "453.635f5f07.chunk.js.map": "/zeeshankashif.github.io/zeeshankashif/static/js/453.635f5f07.chunk.js.map"
+    "main.css": "/static/css/main.808d4f77.css",
+    "main.js": "/static/js/main.0d9cedf7.js",
+    "static/js/453.635f5f07.chunk.js": "/static/js/453.635f5f07.chunk.js",
+    "index.html": "/index.html",
+    "main.808d4f77.css.map": "/static/css/main.808d4f77.css.map",
+    "main.0d9cedf7.js.map": "/static/js/main.0d9cedf7.js.map",
+    "453.635f5f07.chunk.js.map": "/static/js/453.635f5f07.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.81daaba0.css",
-    "static/js/main.909fed1f.js"
+    "static/css/main.808d4f77.css",
+    "static/js/main.0d9cedf7.js"
   ]
 }

@@ -254,7 +254,7 @@ function App() {
                 Zeeshan Kashif
               </h1>
               <p className="hero-sub">
-                  I Like Cats 
+                  Loved by Cats 
               
               </p>
               <div className="hero-ctas">

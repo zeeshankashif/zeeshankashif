@@ -910,3 +910,35 @@
     filter: blur(40px); /* Softer blur for smaller screens */
   }
 }
+/* —— Final Adjustment: Shorten Nav & Move Photo —— */
+@media (max-width: 768px) {
+  /* 1. Make the Navbar thinner */
+  .nav-shell {
+    padding: 0.4rem 0.75rem !important; 
+  }
+
+  .nav {
+    padding: 0.3rem 0.5rem !important;
+    gap: 0.5rem;
+  }
+
+  .nav-brand {
+    font-size: 0.75rem !important;
+  }
+
+  .nav-links a {
+    font-size: 0.7rem !important;
+  }
+
+  /* 2. Push everything down so the photo is visible */
+  .page {
+    padding-top: 130px !important; 
+  }
+
+  /* 3. Give the photo breathing room */
+  .photo-wrap {
+    margin-top: 20px !important;
+    width: 70vw !important; 
+    height: 70vw !important;
+  }
+}

@@ -853,3 +853,60 @@
       width: var(--target, 0%);
     }
   } 
+/* —— Mobile Optimization Block —— */
+
+@media (max-width: 768px) {
+  /* Fix Hero Photo Overflow */
+  .photo-wrap {
+    width: clamp(280px, 80vw, 400px); /* Responsive width */
+    height: clamp(280px, 80vw, 400px); /* Keeps it a circle */
+    margin: 0 auto;
+  }
+
+  /* Adjust Typography for smaller screens */
+  .hero-title {
+    font-size: 2.5rem; /* Prevents text from being too massive */
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  /* Improve Navigation for Touch */
+  .nav-shell {
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+    justify-content: center; /* Center links on mobile */
+    margin: 0.5rem 0;
+  }
+
+  /* Stack CTA buttons on very small screens */
+  @media (max-width: 480px) {
+    .hero-ctas, .about-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .pill {
+      width: 100%; /* Full width buttons are easier to tap */
+    }
+
+    .nav-brand {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Fix Grid Spacing */
+  .section {
+    padding: 3rem 1.25rem; /* Reduce large desktop padding */
+  }
+
+  /* Ensure background streaks don't cause horizontal scroll */
+  .liquid-streak {
+    width: 150vw;
+    filter: blur(40px); /* Softer blur for smaller screens */
+  }
+}

@@ -11,10 +11,25 @@ const NAV = [
 ];
 
 const EXPERIENCE = [
-  { label: 'Frontend & UI', value: 98, weeks: '9+ weeks' },
-  { label: 'React / SPA', value: 88, weeks: '3+ weeks' },
-  { label: 'APIs & Integration', value: 78, weeks: '3+ yrs' },
-  { label: 'Performance', value: 100, years: '20+ yrs' },
+  { label: 'Gaming Experience', value: 97, years: '15+ years' },
+  { label: 'Driving Experience', value: 95, years: '13+ years' },
+  { label: 'Tech Experience', value: 92, years: '12+ years' },
+  { label: 'Shooting Range Sniper Experience', value: 80, years: '3+ years' },
+  { label: 'Camera Experience', value: 90, years: '10+ years' },
+  { label: 'Editing Experience', value: 86, years: '5+ years' },
+  { label: 'Swimming Experience', value: 60, years: '4+ years' },  
+  { label: 'Cricket Experience', value: 80, years: '14+ years' },
+  { label: 'Badminton Experience', value: 70, years: '5+ years' },
+  { label: 'Table Tennis Experience', value: 70, years: '3+ years' },
+  { label: 'Basket + Throw Ball Experience', value: 78, years: '2+ years' },
+  { label: 'Cooking Experience', value: 60, years: '6+ years' },
+  { label: 'Coding Experience', value: 28, years: '2+ years' },
+  { label: 'Calisthenics Experience', value: 30, years: '5+ months' },
+  { label: 'Near Death Experience', value: 99, years: 'Avg 4 times per day' },
+
+  
+
+
 ];
 
 const WORK_ITEMS = [
@@ -58,7 +73,7 @@ function LiquidBackdrop() {
 
 function Navbar({ theme, onToggleTheme }) {
   return (
-    <header className="nav-shell">
+      <header className="nav-shell">
       <nav className="nav glass-panel" aria-label="Primary">
         <a className="nav-brand" href="#home" onClick={(e) => { e.preventDefault(); scrollToId('home'); }}>
           ZK
@@ -72,9 +87,9 @@ function Navbar({ theme, onToggleTheme }) {
             </li>
           ))}
         </ul>
-        <a className="nav-cta pill" href="#projects" onClick={(e) => { e.preventDefault(); scrollToId('projects'); }}>
+        {/* <a className="nav-cta pill" href="#projects" onClick={(e) => { e.preventDefault(); scrollToId('projects'); }}>
           View work
-        </a>
+        </a> */}
         <button
           type="button"
           className="nav-theme-toggle pill pill--ghost"
@@ -97,7 +112,7 @@ function ExperienceSection() {
         <p className="eyebrow">Experience</p>
         <h2 className="section-title">Skills in Motion</h2>
         <p className="section-lead">
-         Here I've shown my experience in the form of Graphics , because brainless people doesn't visualize simple numerics ( like you and me )
+         Here I've showcased my experiences in the form of Graphics , because brainless people doesn't visualize simple numerics ( like you and me )
         </p>
 
         <div className="chart-card glass-panel">
@@ -121,16 +136,16 @@ function ExperienceSection() {
 
           <div className="mini-stats" aria-label="Highlights">
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '0ms' }}>
-              <span className="mini-stat__num">40+</span>
-              <span className="mini-stat__cap">Shipped features</span>
+              <span className="mini-stat__num">94+</span>
+              <span className="mini-stat__cap">Years of Experience</span>
             </div>
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '80ms' }}>
-              <span className="mini-stat__num">12</span>
-              <span className="mini-stat__cap">Products touched</span>
+              <span className="mini-stat__num">20+</span>
+              <span className="mini-stat__cap">Age</span>
             </div>
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '160ms' }}>
-              <span className="mini-stat__num">∞</span>
-              <span className="mini-stat__cap">Iterations</span>
+              <span className="mini-stat__num">74%</span>
+              <span className="mini-stat__cap">Overall Rating</span>
             </div>
           </div>
         </div>

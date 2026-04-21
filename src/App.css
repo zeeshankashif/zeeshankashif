@@ -118,7 +118,7 @@
       transform: rotate(-32deg) translate3d(0, 0, 0) scale(1);
     }
     50% {
-      transform: rotate(-28deg) translate3d(-4%, 3%, 0) scale(1.04);
+        transform: rotate(-28deg) translate3d(-4%, 3%, 0) scale(1.04);
     }
   }
 
@@ -175,6 +175,7 @@
     border-radius: var(--radius-pill);
     border: 1px solid var(--line);
   }
+ 
 
   .nav-links {
     list-style: none;
@@ -205,11 +206,16 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
-
+/* 
   .nav-cta {
-    margin-left: 1rem;
+    margin-left: 0rem;
     flex-shrink: 0;
+    color: #0091ffcf;
+    font-style: italic;
   }
+  .nav-cta:hover{
+    color: #454545;
+  } */
 
   .nav-theme-toggle {
     flex-shrink: 0;
@@ -409,12 +415,13 @@
   .pill--ghost {
     background: transparent;
     color: var(--fg);
-    border: 2px solid var(--line);
+    border: 1px solid var(--line);
   }
 
   .pill--ghost:hover {
-    border-color: rgba(137, 137, 137, 0.993);
-    color: rgba(39, 39, 39, 0.75);
+    background-color: #000000;
+    /* border-color: rgba(102, 255, 0, 0.993); */
+    color: rgb(213, 213, 213); 
   }
 
   /* —— Sections —— */
@@ -817,7 +824,7 @@
 
   @media (max-width: 520px) {
     .page {
-      padding-top: 104px;
+      padding-top: 80px !important;
     }
   }
  
@@ -941,9 +948,9 @@
 
   /* 3. Give the photo breathing room */
   .photo-wrap {
-    margin-top: 20px !important;
-    width: 70vw !important; 
-    height: 70vw !important;
+    margin-top: -30px !important;
+    width: 85vw !important; 
+    height: 85vw !important;
   }
 }
 /* —— Ultra-Compact Mobile Menu —— */
@@ -1039,7 +1046,7 @@
   .nav {
     display: flex !important;
     flex-direction: column !important;
-    padding: 2px !important;
+    padding: 0px !important;
     min-height: 90px !important; /* Ensures the bar is tall enough for 2 rows */
     position: relative !important;
   }
@@ -1047,10 +1054,10 @@
   /* 3. Lock ZK to the top left */
   .nav-brand {
     position: absolute !important;
-    left: 10px !important;
-    top: 10px !important; /* Original position + your 4px request */
+    left: 11px !important;
+    top: 11px !important; /* Original position + your 4px request */
     margin: 0 !important;
-    font-size: 0.7rem !important;
+    font-size: 1rem !important;
     padding: 4px 10px !important;
     width: auto !important;
   }
@@ -1058,11 +1065,11 @@
   /* 4. Lock Dark Mode to the top right & shrink it */
   .nav-theme-toggle {
     position: absolute !important;
-    right: 7px !important;
-    top: 7px !important;
+    right: 8px !important;
+    top: 8px !important;
     margin: 0 !important;
     width: 130px !important;
-    height: 30px !important;
+    height: 35px !important;
   }
 
   .nav-theme-toggle .pill {
@@ -1079,16 +1086,18 @@
 
   /* 5. Push the links down to form the second row */
   .nav-links {
-    margin-top: 42px !important; /* This creates the vertical gap below the buttons */
+    margin-top: 52px !important; /* This creates the vertical gap below the buttons */
     width: 100% !important;
     display: flex !important;
     flex-direction: row !important;
     justify-content: center !important;
     flex-wrap: wrap !important;
-    gap: 8px 12px !important;
-    padding: 10px 0 0 0 !important;
+    gap: 2px 8px !important;
+    padding: 10px 1 1 1 !important;
     border-top: 1px solid var(--line); /* Subtle line between buttons and links */
+    margin-bottom: 4px !important;  
   }
+
 
   .nav-links a {
     font-size: 0.65rem !important;
@@ -1097,6 +1106,6 @@
 
   /* 6. Adjust page padding so the navbar doesn't overlap your hero image */
   .page {
-    padding-top: 140px !important;
+    padding-top: 135px !important;
   }
 }

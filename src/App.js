@@ -26,7 +26,6 @@ const EXPERIENCE = [
   { label: 'Basket + Throw + Foot  Ball Experience', value: 78, years: '2+ years' },
   { label: 'Cooking Experience', value: 60, years: '6+ years' },
   { label: 'Calisthenics Experience', value: 30, years: '4+ months' },
-  // { label: '❤️ Experience', value: 0, years: 'N/A' },
   { label: 'Near Death Experience', value: 99, years: 'Avg 4 times per day' },
   
 
@@ -230,7 +229,7 @@ function AboutSection() {
         I love everything that goes FAST & BOOM 
         </p>
         <div className="about-actions">
-          <a className="pill pill--solid" href="">zeeshankashif.100m@gmail.com</a>
+          <a className="pill pill--solid" href="mailto:hello@zeeshankashif.dev">zeeshankashif.100m@gmail.com</a>
           <a className="pill pill--ghost" href="mailto:hello@zeeshankashif.dev">Email me</a>
 
           <a className="pill pill--ghost" href="#home" onClick={(e) => { e.preventDefault(); scrollToId('home'); }}>Back to top</a>

@@ -250,8 +250,7 @@
 
   /* —— Hero —— */
   .hero {
-    min-height: calc(100vh - 4
-    0px);
+    min-height: calc(100vh - 40px);
     display: flex;
     align-items: flex-start;
     justify-content: center;

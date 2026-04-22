@@ -19,13 +19,17 @@ const EXPERIENCE = [
   { label: 'Editing Experience', value: 86, years: '5+ years' },
   { label: 'Swimming Experience', value: 60, years: '4+ years' },  
   { label: 'Cricket Experience', value: 80, years: '14+ years' },
-  { label: 'Badminton Experience', value: 70, years: '5+ years' },
-  { label: 'Table Tennis Experience', value: 70, years: '3+ years' },
-  { label: 'Basket + Throw Ball Experience', value: 78, years: '2+ years' },
-  { label: 'Cooking Experience', value: 60, years: '6+ years' },
+  { label: 'Badminton Experience', value: 63, years: '5+ years' },
+  { label: 'Chess Experience', value: 42, years: '2+ years' },
   { label: 'Coding Experience', value: 28, years: '2+ years' },
-  { label: 'Calisthenics Experience', value: 30, years: '5+ months' },
+  { label: 'Table Tennis Experience', value: 70, years: '3+ years' },
+  { label: 'Basket + Throw + Foot  Ball Experience', value: 78, years: '2+ years' },
+  { label: 'Cooking Experience', value: 60, years: '6+ years' },
+  { label: 'Calisthenics Experience', value: 30, years: '4+ months' },
+  // { label: '❤️ Experience', value: 0, years: 'N/A' },
   { label: 'Near Death Experience', value: 99, years: 'Avg 4 times per day' },
+  
+
 
   
 
@@ -136,7 +140,7 @@ function ExperienceSection() {
 
           <div className="mini-stats" aria-label="Highlights">
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '0ms' }}>
-              <span className="mini-stat__num">88+</span>
+              <span className="mini-stat__num">90+</span>
               <span className="mini-stat__cap">Years of Experience</span>
             </div>
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '80ms' }}>
@@ -144,8 +148,8 @@ function ExperienceSection() {
               <span className="mini-stat__cap">Age</span>
             </div>
             <div className={`mini-stat ${active ? 'mini-stat--in' : ''}`} style={{ '--d': '160ms' }}>
-              <span className="mini-stat__num">74%</span>
-              <span className="mini-stat__cap">Overall Rating</span>
+              <span className="mini-stat__num">450%</span>
+              <span className="mini-stat__cap">of Age Experience</span>
             </div>
           </div>
         </div>
@@ -223,15 +227,17 @@ function AboutSection() {
         <p className="eyebrow">About</p>
         <h2 className="section-title">Zeeshan Kashif</h2>
         <p className="about-text">
-        I Love everything that goes FAST & BOOM 
+        I love everything that goes FAST & BOOM 
         </p>
         <div className="about-actions">
-          <a className="pill pill--solid" href="mailto:hello@zeeshankashif.dev">Email me</a>
+          <a className="pill pill--solid" href="">zeeshankashif.100m@gmail.com</a>
+          <a className="pill pill--ghost" href="mailto:hello@zeeshankashif.dev">Email me</a>
+
           <a className="pill pill--ghost" href="#home" onClick={(e) => { e.preventDefault(); scrollToId('home'); }}>Back to top</a>
         </div>
       </div>
       <footer className="site-footer">
-        <span>© {new Date().getFullYear()} Verified : Zeeshan Kashif ✔</span>
+        <span>©{new Date().getFullYear()} ZEXAN : Verified ✔</span>
       </footer>
     </section>
   );
@@ -269,7 +275,7 @@ function App() {
                 Zeeshan Kashif
               </h1>
               <p className="hero-sub">
-                  Loved by Cats 
+                  Liked by Cats 
               
               </p>
               <div className="hero-ctas">

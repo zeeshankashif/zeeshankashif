@@ -12,8 +12,8 @@ const NAV = [
 
 const EXPERIENCE = [
   { label: 'Gaming Experience', value: 97, years: '15+ years' },
-  { label: 'Driving Experience', value: 95, years: '13+ years' },
-  { label: 'Tech Experience', value: 92, years: '12+ years' },
+  { label: 'Driving Experience', value: 95, years: '9+ years' },
+  { label: 'Tech Experience', value: 92, years: '10+ years' },
   { label: 'Shooting Range Sniper Experience', value: 80, years: '3+ years' },
   { label: 'Camera Experience', value: 90, years: '10+ years' },
   { label: 'Editing Experience', value: 86, years: '5+ years' },

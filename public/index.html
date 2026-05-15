@@ -1,37 +1,762 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Zeeshan Kashif — Portfolio. Liquid glass UI featuring neon green accents and high-performance web development."
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pixify — Pro Photo Editor</title>
+  <link rel="stylesheet" href="app.css"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='28'%3E🎨%3C/text%3E%3C/svg%3E"/>
+</head>
+<body>
+  <div id="root"></div>
 
-    <title>Zeeshan Kashif — Portfolio</title>
-    
-    <style>
-      /* Essential Global Styles */
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        background-color: #000000;
-        -webkit-font-smoothing: antialiased;
-      }
-      * {
-        -webkit-tap-highlight-color: transparent;
-      }
-    </style>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<!-- ─── Notification ───────────────────────────────────── -->
+<div id="notification"></div>
+
+<!-- ─── Hidden file inputs ────────────────────────────── -->
+<input type="file" id="uploadInput" accept="image/*" style="display:none"/>
+<input type="file" id="conversionUpload" accept="image/*" style="display:none"/>
+
+<!-- ═══════════════════════════════════════════════════════
+     WELCOME SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="welcomeScreen">
+  <div class="welcome-logo font-bebas">PIX<span>I</span>FY</div>
+  <div class="welcome-tagline">Professional Photo Editor</div>
+
+  <div id="dropZone">
+    <div class="drop-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+    </div>
+    <div class="drop-title">Drop your image here</div>
+    <div class="drop-sub">or click to browse</div>
+  </div>
+
+  <div class="welcome-actions">
+    <button class="btn btn-primary" id="uploadBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Image
+    </button>
+    <button class="btn btn-ghost" onclick="document.getElementById('uploadInput').click()">
+      Browse Files
+    </button>
+  </div>
+
+  <div class="format-strip">
+    <span>JPG</span><span>PNG</span><span>WEBP</span><span>AVIF</span>
+    <span>SVG</span><span>GIF</span><span>BMP</span><span>TIFF</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     EDITOR SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="editorScreen">
+
+  <!-- ── Topbar ─────────────────────────────────────────── -->
+  <div id="topbar">
+    <div class="topbar-logo font-bebas">PIX<span>I</span>FY</div>
+
+    <button class="btn btn-icon" id="mobileSidebarToggle" data-tip="Tools">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <div class="topbar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search tools…" autocomplete="off"/>
+    </div>
+
+    <div class="topbar-mid">
+      <!-- Undo/Redo -->
+      <div class="history-btns">
+        <button class="btn btn-icon" id="btnUndo" data-tip="Undo (Ctrl+Z)" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+        </button>
+        <button class="btn btn-icon" id="btnRedo" data-tip="Redo (Ctrl+Y)" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>
+        </button>
+      </div>
+
+      <!-- Zoom controls -->
+      <button class="btn btn-icon" id="btnZoomOut" data-tip="Zoom Out">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      <span class="zoom-display" id="zoomDisplay">100%</span>
+      <button class="btn btn-icon" id="btnZoomIn" data-tip="Zoom In">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      <button class="btn btn-icon" id="btnZoomFit" data-tip="Fit to View">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </button>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" id="btn-reset" data-tip="Reset all edits">Reset</button>
+      <button class="btn btn-ghost btn-sm" id="newImageBtn">New Image</button>
+      <button class="btn btn-primary btn-sm" id="btn-export">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Layout ─────────────────────────────────────── -->
+  <div id="mainLayout">
+
+    <!-- ════════════════════════════════════════════════════
+         LEFT SIDEBAR
+    ════════════════════════════════════════════════════════ -->
+    <div id="sidebar">
+
+      <!-- Tab Bar -->
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" data-panel="adjust">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><sliders-horizontal/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="currentColor"/><circle cx="16" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="18" r="2" fill="currentColor"/></svg>
+          Adjust
+        </button>
+        <button class="sidebar-tab" data-panel="tools">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Tools
+        </button>
+        <button class="sidebar-tab" data-panel="presets">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Presets
+        </button>
+        <button class="sidebar-tab" data-panel="hsl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          HSL
+        </button>
+        <button class="sidebar-tab" data-panel="curves">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Curves
+        </button>
+        <button class="sidebar-tab" data-panel="premium">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Pro
+        </button>
+        <button class="sidebar-tab" data-panel="convert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          Convert
+        </button>
+      </div>
+
+      <!-- Sidebar Content -->
+      <div class="sidebar-content">
+
+        <!-- ── ADJUST PANEL ──────────────────────────────── -->
+        <div class="panel-section active" id="panel-adjust">
+
+          <!-- Light -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Light
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Exposure</span><input class="slider-input" type="range" id="slider-exposure"/><span class="slider-val" id="val-exposure">0</span></div>
+              <div class="slider-row"><span class="slider-label">Brightness</span><input class="slider-input" type="range" id="slider-brightness"/><span class="slider-val" id="val-brightness">0</span></div>
+              <div class="slider-row"><span class="slider-label">Contrast</span><input class="slider-input" type="range" id="slider-contrast"/><span class="slider-val" id="val-contrast">0</span></div>
+              <div class="slider-row"><span class="slider-label">Highlights</span><input class="slider-input" type="range" id="slider-highlights"/><span class="slider-val" id="val-highlights">0</span></div>
+              <div class="slider-row"><span class="slider-label">Shadows</span><input class="slider-input" type="range" id="slider-shadows"/><span class="slider-val" id="val-shadows">0</span></div>
+              <div class="slider-row"><span class="slider-label">Whites</span><input class="slider-input" type="range" id="slider-whites"/><span class="slider-val" id="val-whites">0</span></div>
+              <div class="slider-row"><span class="slider-label">Blacks</span><input class="slider-input" type="range" id="slider-blacks"/><span class="slider-val" id="val-blacks">0</span></div>
+            </div>
+          </div>
+
+          <!-- Color -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Color
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Temperature</span><input class="slider-input" type="range" id="slider-temperature"/><span class="slider-val" id="val-temperature">0</span></div>
+              <div class="slider-row"><span class="slider-label">Tint</span><input class="slider-input" type="range" id="slider-tint"/><span class="slider-val" id="val-tint">0</span></div>
+              <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="slider-saturation"/><span class="slider-val" id="val-saturation">0</span></div>
+              <div class="slider-row"><span class="slider-label">Vibrance</span><input class="slider-input" type="range" id="slider-vibrance"/><span class="slider-val" id="val-vibrance">0</span></div>
+              <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="slider-hue"/><span class="slider-val" id="val-hue">0</span></div>
+            </div>
+          </div>
+
+          <!-- Presence -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Presence
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Clarity</span><input class="slider-input" type="range" id="slider-clarity"/><span class="slider-val" id="val-clarity">0</span></div>
+              <div class="slider-row"><span class="slider-label">Dehaze</span><input class="slider-input" type="range" id="slider-dehaze"/><span class="slider-val" id="val-dehaze">0</span></div>
+              <div class="slider-row"><span class="slider-label">Texture</span><input class="slider-input" type="range" id="slider-texture"/><span class="slider-val" id="val-texture">0</span></div>
+              <div class="slider-row"><span class="slider-label">Sharpness</span><input class="slider-input" type="range" id="slider-sharpness"/><span class="slider-val" id="val-sharpness">0</span></div>
+            </div>
+          </div>
+
+          <!-- Noise -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Noise Reduction
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="slider-noiseReduction"/><span class="slider-val" id="val-noiseReduction">0</span></div>
+              <div class="slider-row"><span class="slider-label">Color Noise</span><input class="slider-input" type="range" id="slider-colorNoise"/><span class="slider-val" id="val-colorNoise">0</span></div>
+            </div>
+          </div>
+
+          <!-- Vignette -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Vignette
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Amount</span><input class="slider-input" type="range" id="slider-vignette"/><span class="slider-val" id="val-vignette">0</span></div>
+              <div class="slider-row"><span class="slider-label">Feather</span><input class="slider-input" type="range" id="slider-vignetteFeather"/><span class="slider-val" id="val-vignetteFeather">50</span></div>
+            </div>
+          </div>
+
+          <!-- Film Grain -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Film Grain
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Amount</span><input class="slider-input" type="range" id="slider-grain"/><span class="slider-val" id="val-grain">0</span></div>
+              <div class="slider-row"><span class="slider-label">Size</span><input class="slider-input" type="range" id="slider-grainSize"/><span class="slider-val" id="val-grainSize">25</span></div>
+              <div class="slider-row"><span class="slider-label">Roughness</span><input class="slider-input" type="range" id="slider-grainRoughness"/><span class="slider-val" id="val-grainRoughness">50</span></div>
+            </div>
+          </div>
+
+          <!-- Effects -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Effects
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Fade</span><input class="slider-input" type="range" id="slider-fade"/><span class="slider-val" id="val-fade">0</span></div>
+              <div class="slider-row"><span class="slider-label">Blur</span><input class="slider-input" type="range" id="slider-blur"/><span class="slider-val" id="val-blur">0</span></div>
+            </div>
+          </div>
+
+          <!-- Transform -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Transform
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Straighten</span><input class="slider-input" type="range" id="slider-rotation" min="-45" max="45" step="0.5" value="0"/><span class="slider-val" id="val-rotation">0</span></div>
+              <div class="quick-actions" style="padding:0">
+                <button class="btn btn-ghost btn-sm" id="btn-rotate-l">↺ Left</button>
+                <button class="btn btn-ghost btn-sm" id="btn-rotate-r">↻ Right</button>
+                <button class="btn btn-ghost btn-sm" id="btn-flip-h">⇆ H</button>
+                <button class="btn btn-ghost btn-sm" id="btn-flip-v">⇅ V</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /panel-adjust -->
+
+
+        <!-- ── TOOLS PANEL ──────────────────────────────── -->
+        <div class="panel-section" id="panel-tools">
+
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Edit Tools
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="tools-grid">
+
+                <button class="tool-item btn-tool" id="btn-crop" onclick="this.classList.toggle('active')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6.13 1 6 16a2 2 0 0 0 2 2h15"/><polyline points="1 6.13 16 6 16 23"/></svg>
+                  Crop
+                </button>
+
+                <button class="tool-item" id="btn-apply-crop">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Apply Crop
+                </button>
+
+                <button class="tool-item" id="btn-rotate-l">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+                  Rotate L
+                </button>
+
+                <button class="tool-item" id="btn-rotate-r2" onclick="document.getElementById('btn-rotate-r').click()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg>
+                  Rotate R
+                </button>
+
+                <button class="tool-item" id="btn-flip-h2" onclick="document.getElementById('btn-flip-h').click()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                  Flip H
+                </button>
+
+                <button class="tool-item" id="btn-flip-v2" onclick="document.getElementById('btn-flip-v').click()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"/><path d="M21 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+                  Flip V
+                </button>
+
+                <button class="tool-item" onclick="if(window.App){}; document.getElementById('slider-blur').value=20; document.getElementById('slider-blur').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                  Blur
+                </button>
+
+                <button class="tool-item" onclick="document.getElementById('slider-sharpness').value=50; document.getElementById('slider-sharpness').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  Sharpen
+                </button>
+
+                <button class="tool-item" onclick="document.getElementById('slider-saturation').value=-100; document.getElementById('slider-saturation').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+                  Desaturate
+                </button>
+
+                <button class="tool-item" onclick="document.getElementById('slider-contrast').value=40; document.getElementById('slider-contrast').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20z"/></svg>
+                  Hi Contrast
+                </button>
+
+                <button class="tool-item" onclick="document.getElementById('slider-grain').value=35; document.getElementById('slider-grain').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="4" height="4"/><rect x="10" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="10" width="4" height="4"/><rect x="17" y="10" width="4" height="4"/><rect x="10" y="17" width="4" height="4"/></svg>
+                  Film Grain
+                </button>
+
+                <button class="tool-item" onclick="document.getElementById('slider-vignette').value=40; document.getElementById('slider-vignette').dispatchEvent(new Event('input'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="10"/><ellipse cx="12" cy="12" rx="5" ry="5"/></svg>
+                  Vignette
+                </button>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Resize -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Resize & Export
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="export-field">
+                <label>Width (px)</label>
+                <input type="number" class="text-input" id="exportWidth" placeholder="Width"/>
+              </div>
+              <div style="margin-top:8px" class="export-field">
+                <label>Height (px)</label>
+                <input type="number" class="text-input" id="exportHeight" placeholder="Height"/>
+              </div>
+              <div style="margin-top:8px" class="export-field">
+                <label>Format</label>
+                <select id="exportFormat">
+                  <option value="png">PNG (Lossless)</option>
+                  <option value="jpg">JPG (Compressed)</option>
+                  <option value="webp">WebP (Modern)</option>
+                  <option value="avif">AVIF (Next-gen)</option>
+                </select>
+              </div>
+              <div style="margin-top:8px">
+                <div class="slider-row">
+                  <span class="slider-label">Quality</span>
+                  <input class="slider-input" type="range" id="exportQuality" min="10" max="100" value="92"/>
+                  <span class="slider-val" id="val-exportQuality">92</span>
+                </div>
+              </div>
+              <div style="margin-top:10px; display:flex; gap:6px">
+                <button class="btn btn-primary btn-sm" style="flex:1" id="btn-export2" onclick="document.getElementById('btn-export').click()">Export</button>
+                <button class="btn btn-ghost btn-sm" id="btn-export-svg">SVG</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /panel-tools -->
+
+
+        <!-- ── PRESETS PANEL ─────────────────────────────── -->
+        <div class="panel-section" id="panel-presets">
+          <div style="padding:12px 14px 4px">
+            <div class="rpanel-title">Filter Presets</div>
+          </div>
+          <div class="presets-grid">
+            <div class="preset-card active" data-preset="none">Original</div>
+            <div class="preset-card" data-preset="vivid">Vivid</div>
+            <div class="preset-card" data-preset="fade">Fade</div>
+            <div class="preset-card" data-preset="cinematic">Cinematic</div>
+            <div class="preset-card" data-preset="noir">Noir</div>
+            <div class="preset-card" data-preset="golden">Golden Hr</div>
+            <div class="preset-card" data-preset="cool">Cool</div>
+            <div class="preset-card" data-preset="warm">Warm</div>
+            <div class="preset-card" data-preset="matte">Matte</div>
+            <div class="preset-card" data-preset="vsco">VSCO</div>
+            <div class="preset-card" data-preset="analog">Analog</div>
+            <div class="preset-card" data-preset="cyberpunk">Cyberpunk</div>
+            <div class="preset-card" data-preset="forest">Forest</div>
+            <div class="preset-card" data-preset="sunset">Sunset</div>
+            <div class="preset-card" data-preset="winter">Winter</div>
+            <div class="preset-card" data-preset="dramatic">Dramatic</div>
+            <div class="preset-card" data-preset="portrait">Portrait</div>
+            <div class="preset-card" data-preset="landscape">Landscape</div>
+            <div class="preset-card" data-preset="urban">Urban</div>
+            <div class="preset-card" data-preset="pastel">Pastel</div>
+            <div class="preset-card" data-preset="chrome">Chrome</div>
+          </div>
+        </div><!-- /panel-presets -->
+
+
+        <!-- ── HSL PANEL ─────────────────────────────────── -->
+        <div class="panel-section" id="panel-hsl">
+          <div style="padding:12px 14px 4px">
+            <div class="rpanel-title">HSL / Color Mix</div>
+          </div>
+
+          <!-- Color selector dots -->
+          <div class="hsl-color-tabs">
+            <div class="hsl-color-btn active" data-color="red" style="background:#ef4444" onclick="selectHSLColor('red',this)" title="Red"></div>
+            <div class="hsl-color-btn" data-color="orange" style="background:#f97316" onclick="selectHSLColor('orange',this)" title="Orange"></div>
+            <div class="hsl-color-btn" data-color="yellow" style="background:#eab308" onclick="selectHSLColor('yellow',this)" title="Yellow"></div>
+            <div class="hsl-color-btn" data-color="green" style="background:#22c55e" onclick="selectHSLColor('green',this)" title="Green"></div>
+            <div class="hsl-color-btn" data-color="aqua" style="background:#06b6d4" onclick="selectHSLColor('aqua',this)" title="Aqua"></div>
+            <div class="hsl-color-btn" data-color="blue" style="background:#3b82f6" onclick="selectHSLColor('blue',this)" title="Blue"></div>
+            <div class="hsl-color-btn" data-color="purple" style="background:#a855f7" onclick="selectHSLColor('purple',this)" title="Purple"></div>
+            <div class="hsl-color-btn" data-color="magenta" style="background:#ec4899" onclick="selectHSLColor('magenta',this)" title="Magenta"></div>
+          </div>
+
+          <!-- HSL sliders for each color -->
+          <script>
+            function selectHSLColor(color, el) {
+              document.querySelectorAll('.hsl-color-btn').forEach(b=>b.classList.remove('active'));
+              el.classList.add('active');
+              document.querySelectorAll('.hsl-panel').forEach(p=>p.classList.remove('active'));
+              document.getElementById('hsl-'+color).classList.add('active');
+            }
+          </script>
+
+          <!-- One panel per color -->
+          <div id="hsl-red" class="hsl-panel active" data-color="red">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-red-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-red-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-red-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-red-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-red-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-red-l-val">0</span></div>
+          </div>
+          <!-- Repeat for each color -->
+          <div id="hsl-orange" class="hsl-panel" data-color="orange">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-orange-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-orange-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-orange-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-orange-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-orange-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-orange-l-val">0</span></div>
+          </div>
+          <div id="hsl-yellow" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-yellow-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-yellow-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-yellow-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-yellow-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-yellow-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-yellow-l-val">0</span></div>
+          </div>
+          <div id="hsl-green" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-green-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-green-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-green-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-green-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-green-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-green-l-val">0</span></div>
+          </div>
+          <div id="hsl-aqua" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-aqua-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-aqua-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-aqua-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-aqua-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-aqua-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-aqua-l-val">0</span></div>
+          </div>
+          <div id="hsl-blue" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-blue-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-blue-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-blue-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-blue-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-blue-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-blue-l-val">0</span></div>
+          </div>
+          <div id="hsl-purple" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-purple-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-purple-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-purple-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-purple-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-purple-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-purple-l-val">0</span></div>
+          </div>
+          <div id="hsl-magenta" class="hsl-panel">
+            <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="hsl-magenta-h" min="-180" max="180" value="0"/><span class="slider-val" id="hsl-magenta-h-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Saturation</span><input class="slider-input" type="range" id="hsl-magenta-s" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-magenta-s-val">0</span></div>
+            <div class="slider-row"><span class="slider-label">Luminance</span><input class="slider-input" type="range" id="hsl-magenta-l" min="-100" max="100" value="0"/><span class="slider-val" id="hsl-magenta-l-val">0</span></div>
+          </div>
+
+        </div><!-- /panel-hsl -->
+
+
+        <!-- ── CURVES PANEL ──────────────────────────────── -->
+        <div class="panel-section" id="panel-curves">
+          <div style="padding:12px 14px 4px">
+            <div class="rpanel-title">Tone Curves</div>
+            <div style="font-size:10.5px;color:var(--silver);margin-bottom:10px">Click to add points · Right-click to remove</div>
+          </div>
+          <div class="curves-wrap">
+            <div class="curve-channels">
+              <button class="curve-channel-btn active" data-channel="RGB">RGB</button>
+              <button class="curve-channel-btn" data-channel="R">R</button>
+              <button class="curve-channel-btn" data-channel="G">G</button>
+              <button class="curve-channel-btn" data-channel="B">B</button>
+            </div>
+            <canvas id="curvesCanvas" width="220" height="180"></canvas>
+          </div>
+        </div><!-- /panel-curves -->
+
+
+        <!-- ── PREMIUM PANEL ─────────────────────────────── -->
+        <div class="panel-section" id="panel-premium">
+
+          <div class="premium-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Premium Tools
+          </div>
+
+          <!-- BG Remover -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Background Remover
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <p style="font-size:11px;color:var(--silver);margin-bottom:10px;line-height:1.5">Automatically removes the background from your image using edge-detection algorithms.</p>
+              <button class="btn btn-primary" style="width:100%" id="btn-bg-remove">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Remove Background
+              </button>
+            </div>
+          </div>
+
+          <!-- BG Blur -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Background Blur
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <div class="slider-row"><span class="slider-label">Blur Amount</span><input class="slider-input" type="range" id="slider-bgBlur" min="0" max="20" value="0"/><span class="slider-val" id="val-bgBlur">0</span></div>
+              <p style="font-size:10.5px;color:var(--silver);margin-top:4px">Apply gaussian blur to the canvas background layer.</p>
+            </div>
+          </div>
+
+          <!-- Chroma Key -->
+          <div class="panel-group open">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Chroma Key
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <p style="font-size:11px;color:var(--silver);margin-bottom:10px;line-height:1.5">Remove a specific color from your image (green screen / blue screen).</p>
+              <div class="color-row">
+                <label>Key Color</label>
+                <input type="color" id="chromaColorPick" value="#00ff00"/>
+              </div>
+              <div class="slider-row"><span class="slider-label">Threshold</span><input class="slider-input" type="range" id="slider-chromaThreshold" min="0" max="200" value="80"/><span class="slider-val" id="val-chromaThreshold">80</span></div>
+              <button class="btn btn-primary" style="width:100%;margin-top:6px" id="chromaToggle">Enable Chroma Key</button>
+            </div>
+          </div>
+
+          <!-- Color Grading -->
+          <div class="panel-group">
+            <div class="panel-group-header" onclick="this.parentElement.classList.toggle('open')">
+              Color Grading
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="panel-group-body">
+              <p style="font-size:11px;color:var(--silver);margin-bottom:10px">Fine-tune Shadows, Midtones, and Highlights independently.</p>
+              <div style="font-size:11px;color:var(--white2);font-weight:600;margin-bottom:6px">Shadows</div>
+              <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="slider-gradeShH" min="-180" max="180" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+              <div class="slider-row"><span class="slider-label">Sat</span><input class="slider-input" type="range" id="slider-gradeShS" min="-100" max="100" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+              <div style="font-size:11px;color:var(--white2);font-weight:600;margin:8px 0 6px">Midtones</div>
+              <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="slider-gradeMiH" min="-180" max="180" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+              <div class="slider-row"><span class="slider-label">Sat</span><input class="slider-input" type="range" id="slider-gradeMiS" min="-100" max="100" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+              <div style="font-size:11px;color:var(--white2);font-weight:600;margin:8px 0 6px">Highlights</div>
+              <div class="slider-row"><span class="slider-label">Hue</span><input class="slider-input" type="range" id="slider-gradeHiH" min="-180" max="180" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+              <div class="slider-row"><span class="slider-label">Sat</span><input class="slider-input" type="range" id="slider-gradeHiS" min="-100" max="100" value="0" oninput="this.nextElementSibling.textContent=this.value"/><span class="slider-val">0</span></div>
+            </div>
+          </div>
+
+        </div><!-- /panel-premium -->
+
+
+        <!-- ── CONVERT PANEL ─────────────────────────────── -->
+        <div class="panel-section" id="panel-convert">
+          <div style="padding:12px 14px 4px">
+            <div class="rpanel-title">Format Conversion</div>
+          </div>
+
+          <div class="conversion-zone" onclick="document.getElementById('conversionUpload').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+            <p>Upload any image to convert</p>
+          </div>
+
+          <div style="padding:10px 14px">
+            <div class="export-field">
+              <label>Convert To</label>
+              <select id="conversionFormat">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+                <option value="webp">WebP</option>
+                <option value="avif">AVIF</option>
+                <option value="svg">SVG</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="padding:0 14px 14px">
+            <div class="rpanel-title" style="margin-bottom:8px">Supported Formats</div>
+            <div class="conversion-formats">
+              <div class="fmt-badge">JPG</div>
+              <div class="fmt-badge">PNG</div>
+              <div class="fmt-badge">WebP</div>
+              <div class="fmt-badge">AVIF</div>
+              <div class="fmt-badge">SVG</div>
+              <div class="fmt-badge">GIF</div>
+              <div class="fmt-badge">BMP</div>
+              <div class="fmt-badge">ICO</div>
+              <div class="fmt-badge">TIFF</div>
+            </div>
+          </div>
+
+          <div style="padding:0 14px 14px">
+            <p style="font-size:11px;color:var(--silver);line-height:1.6">
+              Privacy guaranteed — all conversions happen in your browser. No files are uploaded to any server.
+            </p>
+          </div>
+        </div><!-- /panel-convert -->
+
+      </div><!-- /sidebar-content -->
+    </div><!-- /sidebar -->
+
+
+    <!-- ════════════════════════════════════════════════════
+         CANVAS AREA
+    ════════════════════════════════════════════════════════ -->
+    <div id="canvasArea">
+      <div id="canvasWrap">
+        <canvas id="mainCanvas"></canvas>
+      </div>
+
+      <!-- Floating bottom controls -->
+      <div class="canvas-overlay-btns">
+        <button class="btn btn-ghost btn-sm" id="btn-crop" style="border-radius:999px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6.13 1 6 16a2 2 0 0 0 2 2h15"/><polyline points="1 6.13 16 6 16 23"/></svg>
+          Crop
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btn-apply-crop" style="border-radius:999px">✓ Apply</button>
+        <button class="btn btn-ghost btn-sm" id="btn-flip-h" style="border-radius:999px">⇆ Flip H</button>
+        <button class="btn btn-ghost btn-sm" id="btn-flip-v" style="border-radius:999px">⇅ Flip V</button>
+        <button class="btn btn-ghost btn-sm" id="btn-rotate-l" style="border-radius:999px">↺</button>
+        <button class="btn btn-ghost btn-sm" id="btn-rotate-r" style="border-radius:999px">↻</button>
+        <button class="btn btn-ghost btn-sm" id="btn-reset" style="border-radius:999px">Reset</button>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════════════════════════════════
+         RIGHT PANEL
+    ════════════════════════════════════════════════════════ -->
+    <div id="rightPanel">
+
+      <!-- Histogram -->
+      <div class="rpanel-section">
+        <div class="rpanel-title">Histogram</div>
+        <canvas id="histogram" width="190" height="64"></canvas>
+      </div>
+
+      <!-- Image Info -->
+      <div class="rpanel-section">
+        <div class="rpanel-title">Image Info</div>
+        <div class="image-info" id="imageInfo">
+          <span>No image loaded</span>
+        </div>
+      </div>
+
+      <!-- Quick Export -->
+      <div class="rpanel-section">
+        <div class="rpanel-title">Quick Export</div>
+        <div class="export-row">
+          <div class="export-dims">
+            <input type="number" class="text-input" id="exportWidth" placeholder="W" style="width:80px"/>
+            <span style="color:var(--silver);font-size:11px;align-self:center">×</span>
+            <input type="number" class="text-input" id="exportHeight" placeholder="H" style="width:80px"/>
+          </div>
+          <select id="exportFormat" style="margin-top:6px">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="webp">WebP</option>
+            <option value="avif">AVIF</option>
+          </select>
+          <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="document.getElementById('btn-export').click()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </button>
+          <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px" id="btn-export-svg">Export as SVG</button>
+        </div>
+      </div>
+
+      <!-- Privacy Notice -->
+      <div class="rpanel-section" style="margin-top:auto">
+        <div style="display:flex;gap:6px;align-items:flex-start">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--silver)" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div style="font-size:10.5px;color:var(--grey3);line-height:1.5">All editing happens locally in your browser. Your images are never uploaded to any server.</div>
+        </div>
+      </div>
+
+    </div><!-- /rightPanel -->
+
+  </div><!-- /mainLayout -->
+
+</div><!-- /editorScreen -->
+
+<script src="app.js"></script>
+
+<!-- Fix duplicate element IDs from layout duplication -->
+<script>
+  // Update zoom display live
+  setInterval(() => {
+    const zd = document.getElementById('zoomDisplay');
+    if (zd && window._pixifyZoom !== undefined) {
+      zd.textContent = Math.round(window._pixifyZoom * 100) + '%';
+    }
+  }, 200);
+
+  // Keep right panel export IDs unique by syncing values
+  const syncExportFields = () => {
+    const fmts = document.querySelectorAll('#exportFormat');
+    const ws = document.querySelectorAll('#exportWidth');
+    const hs = document.querySelectorAll('#exportHeight');
+    if (fmts.length > 1) {
+      fmts[0].addEventListener('change', () => fmts[1].value = fmts[0].value);
+      fmts[1].addEventListener('change', () => fmts[0].value = fmts[1].value);
+    }
+    if (ws.length > 1) {
+      ws[0].addEventListener('input', () => ws[1].value = ws[0].value);
+      ws[1].addEventListener('input', () => ws[0].value = ws[1].value);
+    }
+    if (hs.length > 1) {
+      hs[0].addEventListener('input', () => hs[1].value = hs[0].value);
+      hs[1].addEventListener('input', () => hs[0].value = hs[1].value);
+    }
+  };
+  document.addEventListener('DOMContentLoaded', syncExportFields);
+
+  // Open all panel groups on search match
+  document.addEventListener('DOMContentLoaded', () => {
+    const search = document.getElementById('searchInput');
+    if (search) {
+      search.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('.panel-group').forEach(group => {
+          if (!q) return;
+          const text = group.textContent.toLowerCase();
+          if (text.includes(q)) {
+            group.classList.add('open');
+          }
+        });
+      });
+    }
+  });
+</script>
+</body>
 </html>
